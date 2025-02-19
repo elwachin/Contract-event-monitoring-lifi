@@ -16,6 +16,9 @@ export interface ParsedFeeCollectedEvents {
  * For a given block range all `FeesCollected` events are loaded from the Polygon FeeCollector
  */
 export const loadFeeCollectorEvents = (fromBlock: BlockTag, toBlock: BlockTag): Promise<ethers.Event[]> => {
+ /*
+ *TODO: Use multiple RPC endpoints and rotate them for fault tolerance.
+ */
   const feeCollector = new ethers.Contract(
     CONFIG.CONTRACT_ADDRESS,
     FeeCollector__factory.createInterface(),
