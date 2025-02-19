@@ -1,7 +1,16 @@
 # Fee Collector Event Monitoring
 
-This project monitors and processes `FeeCollected` events from the Polygon blockchain using a FeeCollector contract. The events are fetched from the blockchain, parsed, and stored in MongoDB for further processing and querying. It also includes an API to interact with the stored events.
+This project monitors and processes `FeeCollected` events from the Polygon blockchain using a FeeCollector contract. 
+The events are fetched from the blockchain, parsed, and stored in MongoDB for further processing and querying. 
+It also includes an API to interact with the stored events.
 
+Once you run this script, it will automatically fetch all events starting from block 61500000 and save them to MongoDB. 
+It splits the blocks into smaller chunks to prevent failure when dealing with large arrays of data.
+
+If it encounters an issue, such as hitting an RPC limit or a database error, it will exit. 
+The next time you run the script, it will resume querying from the last block it processed.
+
+You can use the API endpoint to retrieve data for a specific integrator.
 ## Table of Contents
 
 - [Setup](#setup)
