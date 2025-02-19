@@ -18,7 +18,9 @@ This project monitors and processes `FeeCollected` events from the Polygon block
    ```
 
 2. Install the dependencies.
-`bash npm install`
+```bash 
+npm install
+```
 
 3. Install mongodb.
 
