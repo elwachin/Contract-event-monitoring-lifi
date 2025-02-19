@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  # MongoDB for testing
+  mongodb-test:
+    image: mongo:latest
+    volumes:
+      - mongodb_test_data:/data/db
+    ports:
+      - "27018:27017"  # Different port for test database
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/fee-collector
+      - NODE_ENV=test
+    networks:
+      - backend 
+
+  # MongoDB for production
+  mongodb:
+    image: mongo:latest
+    volumes:
+      - mongodb_data:/data/db
+    ports:
+      - "27017:27017"  # Default port for production MongoDB
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/fee-collector
+      - NODE_ENV=production
+    networks:
+      - backend 
+
+  # Node.js Application for testing
+  app-test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: test  # Use the "test" stage in the Dockerfile
+    depends_on:
+      - mongodb-test  # Ensure MongoDB is up before the app runs
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/fee-collector
+      - NODE_ENV=test
+    volumes:
+      - .:/app
+    networks:
+      - backend
+
+  # Node.js Application for development
+  app-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev  # Use the "dev" stage in the Dockerfile
+    depends_on:
+      - mongodb  # Ensure MongoDB is up before the app runs
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/fee-collector
+      - NODE_ENV=development
+    volumes:
+      - .:/app
+    ports:
+      - "5000:5000"  # Expose the app on port 5000
+    networks:
+      - backend
+
+  # Node.js Application for production
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: start  # Use the "start" stage in the Dockerfile
+    depends_on:
+      - mongodb  # Ensure MongoDB is up before the app runs
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/fee-collector
+      - NODE_ENV=production
+    ports:
+      - "5000:5000"  # Expose the app on port 5000
+    networks:
+      - backend
+
+volumes:
+  mongodb_test_data:  # Volume for MongoDB data (for testing)
+  mongodb_data:  # Volume for MongoDB data (for production)
+
+networks:
+  backend:
+    driver: bridge
